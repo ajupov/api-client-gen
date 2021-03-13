@@ -1,0 +1,32 @@
+name: api-client-gen
+author: Usman Ayupov <au073@mail.ru>
+description: Generate API Clients by Swagger
+inputs:
+  inputFile:
+    description: Path to swagger.json file
+    required: true
+    default: ""
+  outputFolder:
+    description: Path to output files folder
+    required: true
+    default: ""
+  language:
+    description: Programming language for which clients will be generated
+    required: true
+    default: ""
+
+outputs:
+  result:
+    description: The state of the action, if the API Clients generated successfully
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.inputFile }}
+    - ${{ inputs.outputFolder }}
+    - ${{ inputs.language }}
+
+branding:
+  icon: code
+  color: blue
