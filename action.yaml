@@ -20,12 +20,16 @@ outputs:
     description: The state of the action, if the API Clients generated successfully
 
 runs:
-  using: docker
-  image: Dockerfile
-  args:
-    - ${{ inputs.inputFile }}
-    - ${{ inputs.outputFolder }}
-    - ${{ inputs.language }}
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        docker build -t api-client-gen . |
+        docker run -u 1001 --rm --workdir /github/workspace -v "$GITHUB_WORKSPACE":"/github/workspace" \
+          docker run api-client-gen \
+          -inputFile /github/workspace/${{ inputs.inputFile }} \
+          -outputFolder /github/workspace/${{ inputs.outputFolder }} \
+          -language ${{ inputs.language }}
 
 branding:
   icon: code

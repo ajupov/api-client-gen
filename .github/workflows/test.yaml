@@ -1,0 +1,16 @@
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Generate API Clients by Swagger
+    steps:
+      - name: Generate
+        uses: ./
+        id: api-client-gen
+        with:
+          inputFile: ./swagger.json
+          outputFolder: ./out
+          language: typescript
+      - name: Echo result
+        run: echo "Result is ${{ steps.api-client-gen.outputs.result }}"
