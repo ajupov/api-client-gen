@@ -24,9 +24,8 @@ runs:
   steps:
     - shell: bash
       run: |
-        docker build -t api-client-gen . |
-        docker run -u 1001 --rm --workdir /github/workspace -v "$GITHUB_WORKSPACE":"/github/workspace" \
-          docker run api-client-gen \
+        docker build -t api-client-gen .
+        docker run -u 1001 --rm --workdir /github/workspace -v "$GITHUB_WORKSPACE":"/github/workspace" api-client-gen \
           -inputFile /github/workspace/${{ inputs.inputFile }} \
           -outputFolder /github/workspace/${{ inputs.outputFolder }} \
           -language ${{ inputs.language }}
