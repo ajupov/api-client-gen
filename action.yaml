@@ -6,8 +6,8 @@ inputs:
     description: Path to swagger.json file
     required: true
     default: ""
-  outputFolder:
-    description: Path to output files folder
+  outputDirectory:
+    description: Path to output files directory
     required: true
     default: ""
   language:
@@ -27,7 +27,7 @@ runs:
         docker build -t api-client-gen .
         docker run -u 1001 --rm --workdir /github/workspace -v "$GITHUB_WORKSPACE":"/github/workspace" api-client-gen \
           -inputFile /github/workspace/${{ inputs.inputFile }} \
-          -outputFolder /github/workspace/${{ inputs.outputFolder }} \
+          -outputDirectory /github/workspace/${{ inputs.outputDirectory }} \
           -language ${{ inputs.language }}
 
 branding:

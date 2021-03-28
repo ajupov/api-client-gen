@@ -8,9 +8,9 @@ This action Generate API Clients by Swagger.
 
 **Required.** Path to swagger.json file.
 
-### `outputFolder`
+### `outputDirectory`
 
-**Required.** Path to output files folder.
+**Required.** Path to output files directory.
 
 ### `language`
 
@@ -28,6 +28,6 @@ The state of the action, if the API Clients generated successfully.
 uses: actions/api-client-gen@v1
 with:
     inputFile: ./swagger.json
-    outputFolder: ./out
+    outputDirectory: ./out
     language: typescript
 ```
