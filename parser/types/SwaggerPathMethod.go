@@ -1,3 +1,3 @@
-package main
+package parser
 
 type SwaggerPathsMethod string

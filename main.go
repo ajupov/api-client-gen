@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+
+	"github.com/ajupov/api-client-gen/parser"
 )
 
 func main() {
@@ -23,7 +25,7 @@ func main() {
 
 	fmt.Println(len(content))
 
-	var swagger Swagger
+	var swagger parser.Swagger
 
 	json.Unmarshal([]byte(content), &swagger)
 

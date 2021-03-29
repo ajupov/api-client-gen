@@ -1,5 +1,5 @@
-package main
+package parser
 
 type SwaggerPathResponsesContent map[SwaggerPathResponsesContentType]struct {
-	schema SwaggerPathResponsesContentSchema
+	Schema SwaggerPathResponsesContentSchema `json:"schema"`
 }

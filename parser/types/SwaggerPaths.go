@@ -1,5 +1,5 @@
-package main
+package parser
 
 type SwaggerPaths map[SwaggerPathsMethod]struct {
-	path SwaggerPath
+	Path SwaggerPath `json:"path"`
 }
