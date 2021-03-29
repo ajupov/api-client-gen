@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/ajupov/api-client-gen/parser"
+	parser "github.com/ajupov/api-client-gen/parser/types"
 )
 
 func main() {
@@ -31,5 +31,5 @@ func main() {
 
 	CreateDirectory(*outputDirectory)
 
-	WriteFile(*outputDirectory+"/"+"file", swagger.Info)
+	WriteFile(*outputDirectory+"/"+"file", swagger.Info.Title+" "+swagger.Info.Version)
 }
