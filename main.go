@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	parser "github.com/ajupov/api-client-gen/parser/types"
+	parser "github.com/ajupov/api-client-gen/parser"
 )
 
 func main() {
@@ -22,14 +22,14 @@ func main() {
 	fmt.Println("Language: " + *language)
 
 	content := ReadFile(*inputFile)
-
-	fmt.Println(len(content))
-
-	var swagger parser.Swagger
-
-	json.Unmarshal([]byte(content), &swagger)
+	swagger := parser.Parse(*content)
 
 	CreateDirectory(*outputDirectory)
 
-	WriteFile(*outputDirectory+"/"+"file", swagger.Info.Title+" "+swagger.Info.Version)
+	res, err := json.MarshalIndent(swagger, "", "  ")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	WriteFile(*outputDirectory+"/"+"file.json", string(res))
 }

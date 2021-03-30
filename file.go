@@ -18,7 +18,7 @@ func openFile(path string) *os.File {
 	return file
 }
 
-func readContent(file *os.File) string {
+func readContent(file *os.File) *string {
 	content := ""
 	buffer := make([]byte, 64)
 
@@ -31,10 +31,10 @@ func readContent(file *os.File) string {
 		content += string(buffer[:count])
 	}
 
-	return content
+	return &content
 }
 
-func ReadFile(path string) string {
+func ReadFile(path string) *string {
 	file := openFile(path)
 
 	defer file.Close()

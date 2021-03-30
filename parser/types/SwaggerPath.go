@@ -1,8 +1,8 @@
 package parser
 
-type SwaggerPath struct {
-	Tags        []string                `json:"tags"`
-	Parameters  []SwaggerPathParameters `json:"parameters"`
-	RequestBody SwaggerPathRequestBody  `json:"requestBody"`
-	Responses   SwaggerPathResponses    `json:"responses"`
+type SwaggerPath map[SwaggerPathsMethod]struct {
+	Tags        *[]string                `json:"tags,omitempty"`
+	Parameters  *[]SwaggerPathParameters `json:"parameters,omitempty"`
+	RequestBody *SwaggerPathRequestBody  `json:"requestBody,omitempty"`
+	Responses   *SwaggerPathResponses    `json:"responses,omitempty"`
 }

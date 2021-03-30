@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "go",
+      "mode": "debug",
+      "program": "${workspaceFolder}",
+      "args": ["-inputFile=./swagger.json", "-outputDirectory=./output", "-language=typescript"],
+
+      "request": "launch",
+    }
+  ]
+}

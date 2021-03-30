@@ -1,10 +1,10 @@
 package parser
 
 type SwaggerPathParameters struct {
-	Name        string                      `json:"name"`
-	In          string                      `json:"in"`
-	Required    bool                        `json:"required"`
-	Description string                      `json:"description"`
-	Schema      SwaggerPathParametersSchema `json:"schema"`
-	XEnumNames  []string                    `json:"x-enumNames"`
+	Name        *string        `json:"name,omitempty"`
+	In          *string        `json:"in,omitempty"`
+	Required    *bool          `json:"required,omitempty"`
+	Description *string        `json:"description,omitempty"`
+	Schema      *SwaggerSchema `json:"schema,omitempty"`
+	XEnumNames  *[]string      `json:"x-enumNames,omitempty"`
 }
