@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 
+	filesystem "github.com/ajupov/api-client-gen/filesystem"
 	parser "github.com/ajupov/api-client-gen/parser"
 )
 
@@ -21,15 +21,10 @@ func main() {
 	fmt.Println("Output directory: " + *outputDirectory)
 	fmt.Println("Language: " + *language)
 
-	content := ReadFile(*inputFile)
-	swagger := parser.Parse(*content)
+	filesystem.CreateDirectory(*outputDirectory)
+	content := filesystem.ReadFromFile(*inputFile)
+	swagger := parser.Parse(content)
+	serialized := parser.Serialize(swagger)
 
-	CreateDirectory(*outputDirectory)
-
-	res, err := json.MarshalIndent(swagger, "", "  ")
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	WriteFile(*outputDirectory+"/"+"file.json", string(res))
+	filesystem.WriteToFile(*outputDirectory+"/"+"file.json", serialized)
 }

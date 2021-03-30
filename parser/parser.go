@@ -8,10 +8,10 @@ import (
 	parser "github.com/ajupov/api-client-gen/parser/types"
 )
 
-func Parse(content string) *parser.Swagger {
+func Parse(content *[]byte) *parser.Swagger {
 	var swagger parser.Swagger
 
-	error := json.Unmarshal([]byte(content), &swagger)
+	error := json.Unmarshal(*content, &swagger)
 	if error != nil {
 		fmt.Println("Cannot parse content: " + error.Error())
 
@@ -19,4 +19,13 @@ func Parse(content string) *parser.Swagger {
 	}
 
 	return &swagger
+}
+
+func Serialize(swagger *parser.Swagger) *[]byte {
+	serialized, err := json.MarshalIndent(swagger, "", "  ")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	return &serialized
 }
