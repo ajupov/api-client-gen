@@ -12,10 +12,17 @@ type SwaggerSchemaOrSwaggerReference struct {
 	Description          *string                                     `json:"description,omitempty"`
 	Format               *string                                     `json:"format,omitempty"`
 	Default              *string                                     `json:"default,omitempty"`
+	Nullable             *bool                                       `json:"nullable,omitempty"`
+	Discriminator        *SwaggerSchemaDiscriminator                 `json:"discriminator,omitempty"`
+	ReadOnly             *bool                                       `json:"readOnly,omitempty"`
+	WriteOnly            *bool                                       `json:"writeOnly,omitempty"`
+	Xml                  *SwaggerXml                                 `json:"xml,omitempty"`
+	ExternalDocs         *SwaggerExternalDocumentation               `json:"externalDocs,omitempty"`
+	Example              *string                                     `json:"example,omitempty"`
+	Deprecated           *bool                                       `json:"deprecated,omitempty"`
 	Content              *map[string]SwaggerMediaType                `json:"content,omitempty"`
 	Required             *[]string                                   `json:"required,omitempty"`
 	Enum                 *[]int                                      `json:"enum,omitempty"`
 	XEnumNames           *[]string                                   `json:"x-enumNames,omitempty"`
-	Nullable             *bool                                       `json:"nullable,omitempty"`
 	Ref                  *string                                     `json:"$ref,omitempty"`
 }

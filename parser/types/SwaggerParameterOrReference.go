@@ -13,6 +13,7 @@ type SwaggerParameterOrReference struct {
 	Schema          *SwaggerSchemaOrSwaggerReference             `json:"schema,omitempty"`
 	Example         *string                                      `json:"example,omitempty"`
 	Examples        *map[string]SwaggerExampleOrSwaggerReference `json:"examples,omitempty"`
+	Content         *map[string]SwaggerMediaType                 `json:"content,omitempty"`
 	XEnumNames      *[]string                                    `json:"x-enumNames,omitempty"`
 	Ref             *string                                      `json:"$ref,omitempty"`
 }
