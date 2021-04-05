@@ -26,5 +26,5 @@ func main() {
 	swagger := parser.Parse(content)
 	serialized := parser.Serialize(swagger)
 
-	filesystem.WriteToFile(*outputDirectory+"/"+"file.json", serialized)
+	filesystem.WriteToFile(*outputDirectory+"/"+"file1.json", serialized)
 }

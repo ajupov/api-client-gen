@@ -1,3 +1,3 @@
 package parser
 
-type SwaggerPaths map[string]SwaggerPath
+type SwaggerPaths map[string]SwaggerPathItem

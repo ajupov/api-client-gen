@@ -1,3 +1,0 @@
-package parser
-
-type SwaggerPathResponsesStatusCode string

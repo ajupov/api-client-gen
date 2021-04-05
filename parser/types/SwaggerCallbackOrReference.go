@@ -1,5 +1,5 @@
 package parser
 
-type SwaggerSchemaAdditionalProperties struct {
+type SwaggerCallbackOrReference struct {
 	Ref *string `json:"$ref,omitempty"`
 }

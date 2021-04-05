@@ -1,6 +1,6 @@
 package parser
 
-type Swagger struct {
+type SwaggerComponent struct {
 	Openapi      *string                       `json:"openapi,omitempty"`
 	Info         *SwaggerInfo                  `json:"info,omitempty"`
 	Servers      *[]SwaggerServer              `json:"servers,omitempty"`
