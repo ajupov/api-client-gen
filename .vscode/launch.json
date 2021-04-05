@@ -7,7 +7,6 @@
       "mode": "debug",
       "program": "${workspaceFolder}",
       "args": ["-inputFile=./swagger.json", "-outputDirectory=./output", "-language=typescript"],
-
       "request": "launch",
     }
   ]
