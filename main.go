@@ -29,9 +29,11 @@ type ApiClientMethod struct {
 }
 
 type ApiClientMethodParameter struct {
-	Name     string
-	Type     string
-	Required bool
+	Name               string
+	Type               string
+	IsArrayOfType      bool
+	IsDictionaryOfType bool
+	Required           bool
 }
 
 type ApiClientMethodResponse struct {
@@ -131,6 +133,7 @@ func ConvertHttpMethod(apiClients *[]ApiClient, path string, method string, oper
 
 	ConvertParameters(apiClientMethod, &apiClient.Imports, operation.Parameters)
 	ConvertResponse(apiClientMethod, &apiClient.Imports, operation.Responses)
+	ConvertRequestBody(apiClientMethod, &apiClient.Imports, operation.RequestBody)
 
 	apiClient.Methods = append(apiClient.Methods, *apiClientMethod)
 }
@@ -215,6 +218,53 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 	}
 }
 
+func ConvertRequestBody(apiClientMethod *ApiClientMethod, apiClientImports *[]string, requestBody *types.SwaggerRequestBodyOrReference) {
+	if requestBody == nil || requestBody.Content == nil {
+		return
+	}
+
+	applicationJson, isExistsContent := (*requestBody.Content)["application/json"]
+	if !isExistsContent {
+		return
+	}
+
+	apiClientParameter := ApiClientMethodParameter{
+		Name:     "request",
+		Required: applicationJson.Schema.Required == nil || *applicationJson.Schema.Required,
+	}
+
+	if applicationJson.Schema.Ref != nil {
+		_type, _isImportType := GetTypeWithImport(*applicationJson.Schema)
+		if _isImportType && !StringArrayContains(apiClientImports, _type) {
+			*apiClientImports = append(*apiClientImports, _type)
+		}
+
+		apiClientParameter.Type = _type
+	} else if *applicationJson.Schema.Type == "object" && applicationJson.Schema.AdditionalProperties != nil {
+		apiClientParameter.IsDictionaryOfType = true
+
+		_type, _isImportType := GetTypeWithImport(*applicationJson.Schema.AdditionalProperties)
+		if _isImportType && !StringArrayContains(apiClientImports, _type) {
+			*apiClientImports = append(*apiClientImports, _type)
+		}
+
+		apiClientParameter.Type = _type
+	} else if *applicationJson.Schema.Type == "array" && applicationJson.Schema.Items != nil {
+		apiClientParameter.IsArrayOfType = true
+
+		_type, _isImportType := GetTypeWithImport(*applicationJson.Schema.Items)
+		if _isImportType && !StringArrayContains(apiClientImports, _type) {
+			*apiClientImports = append(*apiClientImports, _type)
+		}
+
+		apiClientParameter.Type = _type
+	} else if applicationJson.Schema.Type != nil {
+		apiClientParameter.Type = *applicationJson.Schema.Type
+	}
+
+	apiClientMethod.Parameters = append(apiClientMethod.Parameters, apiClientParameter)
+}
+
 func GetOrAddApiClient(apiClients *[]ApiClient, apiClientName string) *ApiClient {
 	for i := 0; i < len(*apiClients); i++ {
 		if (*apiClients)[i].Name == apiClientName {
@@ -230,7 +280,13 @@ func GetOrAddApiClient(apiClients *[]ApiClient, apiClientName string) *ApiClient
 
 	*apiClients = append(*apiClients, *apiClient)
 
-	return apiClient
+	for i := 0; i < len(*apiClients); i++ {
+		if (*apiClients)[i].Name == apiClientName {
+			return &(*apiClients)[i]
+		}
+	}
+
+	return nil
 }
 
 func AddApiClientMethod(apiClient *ApiClient, path string, method string) *ApiClientMethod {
