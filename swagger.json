@@ -14,7 +14,7 @@
           {
             "name": "type",
             "in": "query",
-            "description": "\n\n1 = IsShownSelectionOfActivityIndustry\n\n2 = IsShownCreationDefaultEntities",
+            "description": "\r\n\r\n1 = IsShownSelectionOfActivityIndustry\r\n\r\n2 = IsShownCreationDefaultEntities",
             "schema": {
               "$ref": "#/components/schemas/AccountFlagType"
             },
@@ -69,7 +69,7 @@
           {
             "name": "type",
             "in": "query",
-            "description": "\n\n1 = IsShownSelectionOfActivityIndustry\n\n2 = IsShownCreationDefaultEntities",
+            "description": "\r\n\r\n1 = IsShownSelectionOfActivityIndustry\r\n\r\n2 = IsShownCreationDefaultEntities",
             "schema": {
               "$ref": "#/components/schemas/AccountFlagType"
             },
@@ -164,7 +164,7 @@
           {
             "name": "industry",
             "in": "query",
-            "description": "\n\n100 = BeautyIndustryGeneral\n\n101 = BeautyIndustryEyebrows",
+            "description": "\r\n\r\n100 = BeautyIndustryGeneral\r\n\r\n101 = BeautyIndustryEyebrows",
             "schema": {
               "$ref": "#/components/schemas/AccountSettingActivityIndustry"
             },
@@ -1176,23 +1176,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/CompanyType"
-                  }
-                }
-              },
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/CompanyType"
-                  }
-                }
-              },
-              "text/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -1214,23 +1198,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/CompanyIndustryType"
-                  }
-                }
-              },
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/CompanyIndustryType"
-                  }
-                }
-              },
-              "text/json": {
                 "schema": {
                   "type": "object",
                   "additionalProperties": {
@@ -1263,17 +1231,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Company"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Company"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Company"
                 }
@@ -1306,23 +1264,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Company"
-                  }
-                }
-              },
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Company"
-                  }
-                }
-              },
-              "text/json": {
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1353,17 +1295,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CompanyGetPagedListResponse"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CompanyGetPagedListResponse"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CompanyGetPagedListResponse"
                 }
@@ -1391,19 +1323,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "type": "string",
                   "format": "uuid"
@@ -2652,6 +2572,202 @@
         }
       }
     },
+    "/Deals/v1/Get": {
+      "get": {
+        "tags": [
+          "Deals"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Deals/v1/GetList": {
+      "post": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Deal"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Deals/v1/GetPagedList": {
+      "post": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DealGetPagedListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealGetPagedListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Deals/v1/Create": {
+      "put": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Deal"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Deals/v1/Update": {
+      "patch": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Deal"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Deals/v1/Delete": {
+      "patch": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Deals/v1/Restore": {
+      "patch": {
+        "tags": [
+          "Deals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/Deals/Statuses/Changes/v1/GetPagedList": {
       "post": {
         "tags": [
@@ -3100,202 +3216,6 @@
         }
       }
     },
-    "/Deals/v1/Get": {
-      "get": {
-        "tags": [
-          "Deals"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deal"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Deals/v1/GetList": {
-      "post": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Deal"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Deals/v1/GetPagedList": {
-      "post": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DealGetPagedListRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DealGetPagedListResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Deals/v1/Create": {
-      "put": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Deal"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Deals/v1/Update": {
-      "patch": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Deal"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Deals/v1/Delete": {
-      "patch": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Deals/v1/Restore": {
-      "patch": {
-        "tags": [
-          "Deals"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/Leads/Attributes/Changes/v1/GetPagedList": {
       "post": {
         "tags": [
@@ -3619,6 +3539,202 @@
         }
       }
     },
+    "/Leads/v1/Get": {
+      "get": {
+        "tags": [
+          "Leads"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lead"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Leads/v1/GetList": {
+      "post": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Lead"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Leads/v1/GetPagedList": {
+      "post": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadGetPagedListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadGetPagedListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Leads/v1/Create": {
+      "put": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Lead"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Leads/v1/Update": {
+      "patch": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Lead"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Leads/v1/Delete": {
+      "patch": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Leads/v1/Restore": {
+      "patch": {
+        "tags": [
+          "Leads"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/Leads/Sources/v1/Get": {
       "get": {
         "tags": [
@@ -3839,202 +3955,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/Leads/v1/Get": {
-      "get": {
-        "tags": [
-          "Leads"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Lead"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Leads/v1/GetList": {
-      "post": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Lead"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Leads/v1/GetPagedList": {
-      "post": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LeadGetPagedListRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LeadGetPagedListResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Leads/v1/Create": {
-      "put": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Lead"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Leads/v1/Update": {
-      "patch": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Lead"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Leads/v1/Delete": {
-      "patch": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Leads/v1/Restore": {
-      "patch": {
-        "tags": [
-          "Leads"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       }
@@ -4537,230 +4457,6 @@
         }
       }
     },
-    "/Products/Statuses/Changes/v1/GetPagedList": {
-      "post": {
-        "tags": [
-          "ProductStatusChanges"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductStatusChangeGetPagedListRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductStatusChangeGetPagedListResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/Get": {
-      "get": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductStatus"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/GetList": {
-      "post": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProductStatus"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/GetPagedList": {
-      "post": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductStatusGetPagedListRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductStatusGetPagedListResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/Create": {
-      "put": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductStatus"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/Update": {
-      "patch": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductStatus"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/Delete": {
-      "patch": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/Products/Statuses/v1/Restore": {
-      "patch": {
-        "tags": [
-          "ProductStatuses"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uuid"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
     "/Products/v1/GetTypes": {
       "get": {
         "tags": [
@@ -5031,6 +4727,378 @@
         }
       }
     },
+    "/Products/Statuses/Changes/v1/GetPagedList": {
+      "post": {
+        "tags": [
+          "ProductStatusChanges"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductStatusChangeGetPagedListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStatusChangeGetPagedListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/Get": {
+      "get": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/GetList": {
+      "post": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/GetPagedList": {
+      "post": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductStatusGetPagedListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductStatusGetPagedListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/Create": {
+      "put": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/Update": {
+      "patch": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/Delete": {
+      "patch": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Products/Statuses/v1/Restore": {
+      "patch": {
+        "tags": [
+          "ProductStatuses"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Todo/v1": {
+      "get": {
+        "tags": [
+          "Todo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "item",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/Todo/v1/{id}": {
+      "get": {
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "item",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "item",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Todo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/User/Flags/v1/IsSet": {
       "get": {
         "tags": [
@@ -5040,7 +5108,7 @@
           {
             "name": "type",
             "in": "query",
-            "description": "\n\n1 = IsShownWelcome",
+            "description": "\r\n\r\n1 = IsShownWelcome",
             "schema": {
               "$ref": "#/components/schemas/UserFlagType"
             },
@@ -5094,7 +5162,7 @@
           {
             "name": "type",
             "in": "query",
-            "description": "\n\n1 = IsShownWelcome",
+            "description": "\r\n\r\n1 = IsShownWelcome",
             "schema": {
               "$ref": "#/components/schemas/UserFlagType"
             },
@@ -5185,7 +5253,7 @@
           2
         ],
         "type": "integer",
-        "description": "\n\n1 = IsShownSelectionOfActivityIndustry\n\n2 = IsShownCreationDefaultEntities",
+        "description": "\r\n\r\n1 = IsShownSelectionOfActivityIndustry\r\n\r\n2 = IsShownCreationDefaultEntities",
         "format": "int32",
         "x-enumNames": [
           "IsShownSelectionOfActivityIndustry",
@@ -5224,7 +5292,7 @@
           101
         ],
         "type": "integer",
-        "description": "\n\n100 = BeautyIndustryGeneral\n\n101 = BeautyIndustryEyebrows",
+        "description": "\r\n\r\n100 = BeautyIndustryGeneral\r\n\r\n101 = BeautyIndustryEyebrows",
         "format": "int32",
         "x-enumNames": [
           "BeautyIndustryGeneral",
@@ -5991,7 +6059,7 @@
           4
         ],
         "type": "integer",
-        "description": "\n\n1 = Low\n\n2 = Medium\n\n3 = High\n\n4 = Critical",
+        "description": "\r\n\r\n1 = Low\r\n\r\n2 = Medium\r\n\r\n3 = High\r\n\r\n4 = Critical",
         "format": "int32",
         "x-enumNames": [
           "Low",
@@ -6411,7 +6479,7 @@
           64
         ],
         "type": "integer",
-        "description": "\n\n2 = Bool\n\n6 = Integer\n\n8 = Long\n\n10 = Decimal\n\n11 = Single\n\n12 = Double\n\n20 = Date\n\n21 = Time\n\n22 = DateTime\n\n30 = Email\n\n31 = Phone\n\n32 = Address\n\n33 = Geolocation\n\n34 = Image\n\n35 = Document\n\n36 = Link\n\n37 = SocialLink\n\n38 = ImageLink\n\n39 = DocumentLink\n\n40 = BankAccount\n\n60 = Json\n\n61 = Xml\n\n63 = Html\n\n64 = Text",
+        "description": "\r\n\r\n2 = Bool\r\n\r\n6 = Integer\r\n\r\n8 = Long\r\n\r\n10 = Decimal\r\n\r\n11 = Single\r\n\r\n12 = Double\r\n\r\n20 = Date\r\n\r\n21 = Time\r\n\r\n22 = DateTime\r\n\r\n30 = Email\r\n\r\n31 = Phone\r\n\r\n32 = Address\r\n\r\n33 = Geolocation\r\n\r\n34 = Image\r\n\r\n35 = Document\r\n\r\n36 = Link\r\n\r\n37 = SocialLink\r\n\r\n38 = ImageLink\r\n\r\n39 = DocumentLink\r\n\r\n40 = BankAccount\r\n\r\n60 = Json\r\n\r\n61 = Xml\r\n\r\n63 = Html\r\n\r\n64 = Text",
         "format": "int32",
         "x-enumNames": [
           "Bool",
@@ -7259,7 +7327,7 @@
           9
         ],
         "type": "integer",
-        "description": "\n\n1 = Transport\n\n2 = Computer\n\n3 = Telecommunication\n\n4 = Agriculture\n\n5 = Construction\n\n6 = Education\n\n7 = Food\n\n8 = Entertainment\n\n9 = Music",
+        "description": "\r\n\r\n1 = Transport\r\n\r\n2 = Computer\r\n\r\n3 = Telecommunication\r\n\r\n4 = Agriculture\r\n\r\n5 = Construction\r\n\r\n6 = Education\r\n\r\n7 = Food\r\n\r\n8 = Entertainment\r\n\r\n9 = Music",
         "format": "int32",
         "x-enumNames": [
           "Transport",
@@ -7280,7 +7348,7 @@
           3
         ],
         "type": "integer",
-        "description": "\n\n1 = SelfEmployed\n\n2 = Commercial\n\n3 = NonCommercial",
+        "description": "\r\n\r\n1 = SelfEmployed\r\n\r\n2 = Commercial\r\n\r\n3 = NonCommercial",
         "format": "int32",
         "x-enumNames": [
           "SelfEmployed",
@@ -10832,7 +10900,7 @@
           2
         ],
         "type": "integer",
-        "description": "\n\n1 = Material\n\n2 = NonMaterial",
+        "description": "\r\n\r\n1 = Material\r\n\r\n2 = NonMaterial",
         "format": "int32",
         "x-enumNames": [
           "Material",
@@ -10844,7 +10912,7 @@
           1
         ],
         "type": "integer",
-        "description": "\n\n1 = IsShownWelcome",
+        "description": "\r\n\r\n1 = IsShownWelcome",
         "format": "int32",
         "x-enumNames": [
           "IsShownWelcome"

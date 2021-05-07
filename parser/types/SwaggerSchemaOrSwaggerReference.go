@@ -21,7 +21,7 @@ type SwaggerSchemaOrSwaggerReference struct {
 	Example              *string                                     `json:"example,omitempty"`
 	Deprecated           *bool                                       `json:"deprecated,omitempty"`
 	Content              *map[string]SwaggerMediaType                `json:"content,omitempty"`
-	Required             *[]string                                   `json:"required,omitempty"`
+	Required             *bool                                       `json:"required,omitempty"`
 	Enum                 *[]int                                      `json:"enum,omitempty"`
 	XEnumNames           *[]string                                   `json:"x-enumNames,omitempty"`
 	Ref                  *string                                     `json:"$ref,omitempty"`
