@@ -25,7 +25,7 @@ type ApiClientMethod struct {
 	RequestContentType  string
 	ResponseContentType string
 	Parameters          []ApiClientMethodParameter
-	Response            ApiClientMethodResponse
+	Response            *ApiClientMethodResponse
 }
 
 type ApiClientMethodParameter struct {
@@ -89,6 +89,12 @@ func Convert(swagger *types.Swagger) *[]ApiClient {
 		return apiClients[i].Name < apiClients[j].Name
 	})
 
+	for _, item := range apiClients {
+		sort.Slice(item.Methods, func(i, j int) bool {
+			return item.Methods[i].Name < item.Methods[j].Name
+		})
+	}
+
 	return &apiClients
 }
 
@@ -119,18 +125,14 @@ func ConvertHttpMethod(apiClients *[]ApiClient, path string, method string, oper
 		return
 	}
 
-	apiClient := GetOrAddApiClient(apiClients, (*operation.Tags)[0])
+	apiClientName := (*operation.Tags)[0]
+	apiClient := GetOrAddApiClient(apiClients, apiClientName)
 	apiClientMethod := AddApiClientMethod(apiClient, path, method)
 
 	ConvertParameters(apiClientMethod, &apiClient.Imports, operation.Parameters)
-
-	ConvertResponse(apiClientMethod, &apiClient.Imports, operation)
+	ConvertResponse(apiClientMethod, &apiClient.Imports, operation.Responses)
 
 	apiClient.Methods = append(apiClient.Methods, *apiClientMethod)
-
-	sort.Slice(apiClient.Methods, func(i, j int) bool {
-		return apiClient.Methods[i].Name < apiClient.Methods[j].Name
-	})
 }
 
 func GetApiClientMethodName(path string) string {
@@ -163,12 +165,12 @@ func ConvertParameters(apiClientMethod *ApiClientMethod, apiClientImports *[]str
 	}
 }
 
-func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]string, operation *types.SwaggerOperation) {
-	if operation.Responses == nil {
+func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]string, responses *map[string]types.SwaggerResponseOrSwaggerReference) {
+	if responses == nil {
 		return
 	}
 
-	okResponse, isExistsOkResponse := (*operation.Responses)["200"]
+	okResponse, isExistsOkResponse := (*responses)["200"]
 	if !isExistsOkResponse || okResponse.Content == nil {
 		return
 	}
@@ -178,7 +180,7 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 		return
 	}
 
-	apiClientMethod.Response = ApiClientMethodResponse{
+	apiClientMethod.Response = &ApiClientMethodResponse{
 		IsArrayOfType:      false,
 		IsDictionaryOfType: false,
 	}
