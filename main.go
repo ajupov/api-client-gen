@@ -12,6 +12,8 @@ import (
 	types "github.com/ajupov/api-client-gen/parser/types"
 )
 
+const applicationJsonContentType = "application/json"
+
 type ApiClient struct {
 	Name    string
 	Imports []string
@@ -33,13 +35,14 @@ type ApiClientMethodParameter struct {
 	Type               string
 	IsArrayOfType      bool
 	IsDictionaryOfType bool
-	Required           bool
+	Nullable           bool
 }
 
 type ApiClientMethodResponse struct {
 	Type               string
 	IsArrayOfType      bool
 	IsDictionaryOfType bool
+	Nullable           bool
 }
 
 func main() {
@@ -161,7 +164,7 @@ func ConvertParameters(apiClientMethod *ApiClientMethod, apiClientImports *[]str
 		apiClientParameter := ApiClientMethodParameter{
 			Name:     *parameter.Name,
 			Type:     _type,
-			Required: parameter.Schema.Required == nil || *parameter.Schema.Required,
+			Nullable: parameter.Schema.Required != nil && !*parameter.Schema.Required,
 		}
 
 		apiClientMethod.Parameters = append(apiClientMethod.Parameters, apiClientParameter)
@@ -178,7 +181,7 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 		return
 	}
 
-	applicationJson, isExistsContent := (*okResponse.Content)["application/json"]
+	applicationJson, isExistsContent := (*okResponse.Content)[applicationJsonContentType]
 	if !isExistsContent {
 		return
 	}
@@ -195,6 +198,7 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 		}
 
 		apiClientMethod.Response.Type = _type
+		apiClientMethod.Response.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	} else if *applicationJson.Schema.Type == "object" && applicationJson.Schema.AdditionalProperties != nil {
 		apiClientMethod.Response.IsDictionaryOfType = true
 
@@ -204,6 +208,7 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 		}
 
 		apiClientMethod.Response.Type = _type
+		apiClientMethod.Response.Nullable = applicationJson.Schema.AdditionalProperties.Nullable != nil && *applicationJson.Schema.AdditionalProperties.Nullable
 	} else if *applicationJson.Schema.Type == "array" && applicationJson.Schema.Items != nil {
 		apiClientMethod.Response.IsArrayOfType = true
 
@@ -213,8 +218,10 @@ func ConvertResponse(apiClientMethod *ApiClientMethod, apiClientImports *[]strin
 		}
 
 		apiClientMethod.Response.Type = _type
+		apiClientMethod.Response.Nullable = applicationJson.Schema.Items.Nullable != nil && *applicationJson.Schema.Items.Nullable
 	} else if applicationJson.Schema.Type != nil {
 		apiClientMethod.Response.Type = *applicationJson.Schema.Type
+		apiClientMethod.Response.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	}
 }
 
@@ -223,14 +230,14 @@ func ConvertRequestBody(apiClientMethod *ApiClientMethod, apiClientImports *[]st
 		return
 	}
 
-	applicationJson, isExistsContent := (*requestBody.Content)["application/json"]
+	applicationJson, isExistsContent := (*requestBody.Content)[applicationJsonContentType]
 	if !isExistsContent {
 		return
 	}
 
 	apiClientParameter := ApiClientMethodParameter{
 		Name:     "request",
-		Required: applicationJson.Schema.Required == nil || *applicationJson.Schema.Required,
+		Nullable: applicationJson.Schema.Required != nil && !*applicationJson.Schema.Required,
 	}
 
 	if applicationJson.Schema.Ref != nil {
@@ -240,6 +247,7 @@ func ConvertRequestBody(apiClientMethod *ApiClientMethod, apiClientImports *[]st
 		}
 
 		apiClientParameter.Type = _type
+		apiClientParameter.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	} else if *applicationJson.Schema.Type == "object" && applicationJson.Schema.AdditionalProperties != nil {
 		apiClientParameter.IsDictionaryOfType = true
 
@@ -249,6 +257,7 @@ func ConvertRequestBody(apiClientMethod *ApiClientMethod, apiClientImports *[]st
 		}
 
 		apiClientParameter.Type = _type
+		apiClientParameter.Nullable = applicationJson.Schema.AdditionalProperties.Nullable != nil && *applicationJson.Schema.AdditionalProperties.Nullable
 	} else if *applicationJson.Schema.Type == "array" && applicationJson.Schema.Items != nil {
 		apiClientParameter.IsArrayOfType = true
 
@@ -258,8 +267,10 @@ func ConvertRequestBody(apiClientMethod *ApiClientMethod, apiClientImports *[]st
 		}
 
 		apiClientParameter.Type = _type
+		apiClientParameter.Nullable = applicationJson.Schema.Items.Nullable != nil && *applicationJson.Schema.Items.Nullable
 	} else if applicationJson.Schema.Type != nil {
 		apiClientParameter.Type = *applicationJson.Schema.Type
+		apiClientParameter.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	}
 
 	apiClientMethod.Parameters = append(apiClientMethod.Parameters, apiClientParameter)
@@ -290,12 +301,17 @@ func GetOrAddApiClient(apiClients *[]ApiClient, apiClientName string) *ApiClient
 }
 
 func AddApiClientMethod(apiClient *ApiClient, path string, method string) *ApiClientMethod {
+	requestContentType := ""
+	if method != "GET" {
+		requestContentType = applicationJsonContentType
+	}
+
 	apiClientMethod := &ApiClientMethod{
 		Name:                GetApiClientMethodName(path),
 		Url:                 path,
 		Method:              method,
-		RequestContentType:  "application/json",
-		ResponseContentType: "application/json",
+		RequestContentType:  requestContentType,
+		ResponseContentType: applicationJsonContentType,
 	}
 
 	return apiClientMethod
