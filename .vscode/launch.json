@@ -6,7 +6,7 @@
       "type": "go",
       "mode": "debug",
       "program": "${workspaceFolder}",
-      "args": ["-inputFile=./swagger.json", "-outputDirectory=./output", "-regex=.*\/{version}\/{action}", "-language=typescript"],
+      "args": ["-inputFile=./swagger.json", "-outputDirectory=./output", "-regex=(?:.*\/v1\/)+({action})", "-language=typescript"],
       "request": "launch",
     }
   ]

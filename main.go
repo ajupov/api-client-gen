@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -64,7 +65,7 @@ func main() {
 	content := filesystem.ReadFromFile(*inputFile)
 	swagger := parser.Parse(content)
 
-	apiClients := Convert(swagger)
+	apiClients := Convert(swagger, regex)
 
 	apiClientsSerialized, error := json.MarshalIndent(*apiClients, "", "  ")
 	if error != nil {
@@ -79,7 +80,7 @@ func main() {
 	// filesystem.WriteToFile(outputPath, serialized)
 }
 
-func Convert(swagger *types.Swagger) *[]ApiClient {
+func Convert(swagger *types.Swagger, regex *string) *[]ApiClient {
 	if swagger.Paths == nil {
 		return nil
 	}
@@ -87,7 +88,7 @@ func Convert(swagger *types.Swagger) *[]ApiClient {
 	apiClients := make([]ApiClient, 0)
 
 	for path, pathItem := range *swagger.Paths {
-		ConvertPath(&apiClients, path, &pathItem)
+		ConvertPath(&apiClients, regex, path, &pathItem)
 	}
 
 	sort.Slice(apiClients, func(i, j int) bool {
@@ -103,36 +104,36 @@ func Convert(swagger *types.Swagger) *[]ApiClient {
 	return &apiClients
 }
 
-func ConvertPath(apiClients *[]ApiClient, path string, pathItem *types.SwaggerPathItem) {
+func ConvertPath(apiClients *[]ApiClient, regex *string, path string, pathItem *types.SwaggerPathItem) {
 	if pathItem.Get != nil {
-		ConvertHttpMethod(apiClients, path, "GET", pathItem.Get)
+		ConvertHttpMethod(apiClients, regex, path, "GET", pathItem.Get)
 	}
 
 	if pathItem.Post != nil {
-		ConvertHttpMethod(apiClients, path, "POST", pathItem.Post)
+		ConvertHttpMethod(apiClients, regex, path, "POST", pathItem.Post)
 	}
 
 	if pathItem.Put != nil {
-		ConvertHttpMethod(apiClients, path, "PUT", pathItem.Put)
+		ConvertHttpMethod(apiClients, regex, path, "PUT", pathItem.Put)
 	}
 
 	if pathItem.Patch != nil {
-		ConvertHttpMethod(apiClients, path, "PATCH", pathItem.Patch)
+		ConvertHttpMethod(apiClients, regex, path, "PATCH", pathItem.Patch)
 	}
 
 	if pathItem.Delete != nil {
-		ConvertHttpMethod(apiClients, path, "DELETE", pathItem.Delete)
+		ConvertHttpMethod(apiClients, regex, path, "DELETE", pathItem.Delete)
 	}
 }
 
-func ConvertHttpMethod(apiClients *[]ApiClient, path string, method string, operation *types.SwaggerOperation) {
+func ConvertHttpMethod(apiClients *[]ApiClient, regex *string, path string, method string, operation *types.SwaggerOperation) {
 	if *operation.Tags == nil || len(*operation.Tags) == 0 {
 		return
 	}
 
 	apiClientName := (*operation.Tags)[0]
 	apiClient := GetOrAddApiClient(apiClients, apiClientName)
-	apiClientMethod := AddApiClientMethod(apiClient, path, method)
+	apiClientMethod := AddApiClientMethod(apiClient, regex, path, method)
 
 	ConvertParameters(apiClientMethod, &apiClient.Imports, operation.Parameters)
 	ConvertResponse(apiClientMethod, &apiClient.Imports, operation.Responses)
@@ -141,10 +142,19 @@ func ConvertHttpMethod(apiClients *[]ApiClient, path string, method string, oper
 	apiClient.Methods = append(apiClient.Methods, *apiClientMethod)
 }
 
-func GetApiClientMethodName(path string) string {
-	apiClientMethodName := GetPathLastPart(path)
-	if len(apiClientMethodName) == 0 {
-		apiClientMethodName = "Default"
+func GetApiClientMethodName(regex *string, path string) string {
+	passedActonRegex := strings.Replace(*regex, "{action}", "\\w+", 1)
+	compiledRegex := regexp.MustCompile(passedActonRegex)
+
+	matched := compiledRegex.FindStringSubmatch(path)
+
+	apiClientMethodName := ""
+	if len(matched) == 2 {
+		fmt.Println(path + " : " + matched[1])
+		apiClientMethodName = matched[1]
+	} else {
+		apiClientMethodName = "_________________________Get"
+		fmt.Println(path + " : " + apiClientMethodName)
 	}
 
 	return apiClientMethodName
@@ -300,14 +310,14 @@ func GetOrAddApiClient(apiClients *[]ApiClient, apiClientName string) *ApiClient
 	return nil
 }
 
-func AddApiClientMethod(apiClient *ApiClient, path string, method string) *ApiClientMethod {
+func AddApiClientMethod(apiClient *ApiClient, regex *string, path string, method string) *ApiClientMethod {
 	requestContentType := ""
 	if method != "GET" {
 		requestContentType = applicationJsonContentType
 	}
 
 	apiClientMethod := &ApiClientMethod{
-		Name:                GetApiClientMethodName(path),
+		Name:                GetApiClientMethodName(regex, path),
 		Url:                 path,
 		Method:              method,
 		RequestContentType:  requestContentType,
