@@ -142,7 +142,7 @@ func ConvertHttpMethod(apiClients *[]ApiClient, regex *string, path string, meth
 	apiClient.Methods = append(apiClient.Methods, *apiClientMethod)
 }
 
-func GetApiClientMethodName(regex *string, path string) string {
+func GetApiClientMethodName(regex *string, path string, method string) string {
 	passedActonRegex := strings.Replace(*regex, "{action}", "\\w+", 1)
 	compiledRegex := regexp.MustCompile(passedActonRegex)
 
@@ -150,11 +150,9 @@ func GetApiClientMethodName(regex *string, path string) string {
 
 	apiClientMethodName := ""
 	if len(matched) == 2 {
-		fmt.Println(path + " : " + matched[1])
 		apiClientMethodName = matched[1]
 	} else {
-		apiClientMethodName = "_________________________Get"
-		fmt.Println(path + " : " + apiClientMethodName)
+		apiClientMethodName = strings.Title(strings.ToLower(method))
 	}
 
 	return apiClientMethodName
@@ -317,7 +315,7 @@ func AddApiClientMethod(apiClient *ApiClient, regex *string, path string, method
 	}
 
 	apiClientMethod := &ApiClientMethod{
-		Name:                GetApiClientMethodName(regex, path),
+		Name:                GetApiClientMethodName(regex, path, method),
 		Url:                 path,
 		Method:              method,
 		RequestContentType:  requestContentType,
