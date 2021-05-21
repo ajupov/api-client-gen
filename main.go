@@ -46,6 +46,27 @@ type ApiClientMethodResponse struct {
 	Nullable           bool
 }
 
+type ApiModel struct {
+	Name       string
+	Imports    []string
+	IsEnum     bool
+	Properties []ApiModelProperty
+	EnumItems  []ApiModelEnumItem
+}
+
+type ApiModelProperty struct {
+	Name               string
+	Type               string
+	IsArrayOfType      bool
+	IsDictionaryOfType bool
+	Nullable           bool
+}
+
+type ApiModelEnumItem struct {
+	Name  string
+	Value int
+}
+
 func main() {
 	var (
 		inputFile       = flag.String("inputFile", "", "Path to swagger.json file")
@@ -65,7 +86,7 @@ func main() {
 	content := filesystem.ReadFromFile(*inputFile)
 	swagger := parser.Parse(content)
 
-	apiClients := Convert(swagger, regex)
+	apiClients, apiModels := Convert(swagger, regex)
 
 	apiClientsSerialized, error := json.MarshalIndent(*apiClients, "", "  ")
 	if error != nil {
@@ -80,15 +101,32 @@ func main() {
 	// filesystem.WriteToFile(outputPath, serialized)
 }
 
-func Convert(swagger *types.Swagger, regex *string) *[]ApiClient {
+func Convert(swagger *types.Swagger, regex *string) (*[]ApiClient, *[]ApiModel) {
+	matched, error := regexp.MatchString("3(.\\d+)*", *swagger.Openapi)
+	if error != nil {
+		fmt.Println(error.Error())
+	}
+
+	if !matched {
+		return nil, nil
+	}
+
 	if swagger.Paths == nil {
-		return nil
+		return nil, nil
 	}
 
 	apiClients := make([]ApiClient, 0)
 
 	for path, pathItem := range *swagger.Paths {
 		ConvertPath(&apiClients, regex, path, &pathItem)
+	}
+
+	apiModels := make([]ApiModel, 0)
+
+	if swagger.Components != nil && *swagger.Components.Schemas != nil {
+		for schemaName, schema := range *swagger.Components.Schemas {
+			ConvertSchema(&apiModels, schemaName, &schema)
+		}
 	}
 
 	sort.Slice(apiClients, func(i, j int) bool {
@@ -101,7 +139,7 @@ func Convert(swagger *types.Swagger, regex *string) *[]ApiClient {
 		})
 	}
 
-	return &apiClients
+	return &apiClients, &apiModels
 }
 
 func ConvertPath(apiClients *[]ApiClient, regex *string, path string, pathItem *types.SwaggerPathItem) {
@@ -352,4 +390,70 @@ func StringArrayContains(array *[]string, element string) bool {
 	}
 
 	return false
+}
+
+////////////////////////
+
+func ConvertSchema(apiModels *[]ApiModel, schemaName string, schema *types.SwaggerComponentsSchemaOrSwaggerReference) {
+	apiModel := ApiModel{
+		Name: schemaName,
+	}
+
+	if schema.Enum != nil {
+		apiModel.IsEnum = true
+		apiModel.EnumItems = make([]ApiModelEnumItem, len(*schema.Enum))
+
+		for i := 0; i < len(*schema.Enum); i++ {
+			apiModelEnumItem := ApiModelEnumItem{
+				Name:  (*schema.XEnumNames)[i],
+				Value: (*schema.Enum)[i],
+			}
+
+			apiModel.EnumItems[i] = apiModelEnumItem
+		}
+	} else if schema.Properties != nil {
+		for propertyName, property := range *schema.Properties {
+			apiModelProperty := ApiModelProperty{
+				Name: propertyName,
+			}
+
+			if property.Ref != nil {
+				_type, _isImportType := GetTypeWithImport(property)
+				if _isImportType && !StringArrayContains(&apiModel.Imports, _type) {
+					apiModel.Imports = append(apiModel.Imports, _type)
+				}
+
+				apiModelProperty.Type = _type
+				apiModelProperty.Nullable = property.Nullable != nil && *property.Nullable
+			} else if *property.Type == "object" && property.AdditionalProperties != nil {
+				apiModelProperty.IsDictionaryOfType = true
+
+				_type, _isImportType := GetTypeWithImport(*property.AdditionalProperties)
+				if _isImportType && !StringArrayContains(&apiModel.Imports, _type) {
+					apiModel.Imports = append(apiModel.Imports, _type)
+				}
+
+				apiModelProperty.Type = _type
+				apiModelProperty.Nullable = property.AdditionalProperties.Nullable != nil && *property.AdditionalProperties.Nullable
+			} else if *property.Type == "array" && property.Items != nil {
+				apiModelProperty.IsArrayOfType = true
+
+				_type, _isImportType := GetTypeWithImport(*property.Items)
+				if _isImportType && !StringArrayContains(&apiModel.Imports, _type) {
+					apiModel.Imports = append(apiModel.Imports, _type)
+				}
+
+				apiModelProperty.Type = _type
+				apiModelProperty.Nullable = property.Items.Nullable != nil && *property.Items.Nullable
+			} else if property.Type != nil {
+				apiModelProperty.Type = *property.Type
+				apiModelProperty.Nullable = property.Nullable != nil && *property.Nullable
+			}
+
+			apiModel.Properties = append(apiModel.Properties, apiModelProperty)
+
+		}
+	}
+
+	*apiModels = append(*apiModels, apiModel)
 }
