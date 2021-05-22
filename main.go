@@ -15,6 +15,11 @@ import (
 
 const applicationJsonContentType = "application/json"
 
+type Api struct {
+	apiClients []ApiClient
+	apiModels  []ApiModel
+}
+
 type ApiClient struct {
 	Name    string
 	Imports []string
@@ -86,9 +91,9 @@ func main() {
 	content := filesystem.ReadFromFile(*inputFile)
 	swagger := parser.Parse(content)
 
-	apiClients, apiModels := Convert(swagger, regex)
+	api := Convert(swagger, regex)
 
-	apiClientsSerialized, error := json.MarshalIndent(*apiClients, "", "  ")
+	apiClientsSerialized, error := json.MarshalIndent(api.apiModels, "", "  ")
 	if error != nil {
 		fmt.Println(error.Error())
 	}
@@ -101,18 +106,18 @@ func main() {
 	// filesystem.WriteToFile(outputPath, serialized)
 }
 
-func Convert(swagger *types.Swagger, regex *string) (*[]ApiClient, *[]ApiModel) {
+func Convert(swagger *types.Swagger, regex *string) *Api {
 	matched, error := regexp.MatchString("3(.\\d+)*", *swagger.Openapi)
 	if error != nil {
 		fmt.Println(error.Error())
 	}
 
 	if !matched {
-		return nil, nil
+		return nil
 	}
 
 	if swagger.Paths == nil {
-		return nil, nil
+		return nil
 	}
 
 	apiClients := make([]ApiClient, 0)
@@ -139,7 +144,10 @@ func Convert(swagger *types.Swagger, regex *string) (*[]ApiClient, *[]ApiModel) 
 		})
 	}
 
-	return &apiClients, &apiModels
+	return &Api{
+		apiClients: apiClients,
+		apiModels:  apiModels,
+	}
 }
 
 func ConvertPath(apiClients *[]ApiClient, regex *string, path string, pathItem *types.SwaggerPathItem) {
