@@ -13,7 +13,7 @@ import (
 
 const applicationJsonContentType = "application/json"
 
-func Convert(swagger *parser.Swagger, regex *string) *converter.Api {
+func Convert(swagger *parser.Swagger, regex string) *converter.Api {
 	matched, error := regexp.MatchString("3(.\\d+)*", *swagger.Openapi)
 	if error != nil {
 		fmt.Println("Cannot match OpenAPI version: " + error.Error())
@@ -61,7 +61,7 @@ func Convert(swagger *parser.Swagger, regex *string) *converter.Api {
 	return &api
 }
 
-func convertPath(apiClients *[]converter.ApiClient, regex *string, path string, pathItem *parser.SwaggerPathItem) {
+func convertPath(apiClients *[]converter.ApiClient, regex string, path string, pathItem *parser.SwaggerPathItem) {
 	if pathItem.Get != nil {
 		convertHttpMethod(apiClients, regex, path, "GET", pathItem.Get)
 	}
@@ -83,7 +83,7 @@ func convertPath(apiClients *[]converter.ApiClient, regex *string, path string, 
 	}
 }
 
-func convertHttpMethod(apiClients *[]converter.ApiClient, regex *string, path string, method string, operation *parser.SwaggerOperation) {
+func convertHttpMethod(apiClients *[]converter.ApiClient, regex string, path string, method string, operation *parser.SwaggerOperation) {
 	if *operation.Tags == nil || len(*operation.Tags) == 0 {
 		return
 	}
@@ -313,7 +313,7 @@ func getOrAddApiClient(apiClients *[]converter.ApiClient, apiClientName string) 
 	return nil
 }
 
-func addApiClientMethod(apiClient *converter.ApiClient, regex *string, path string, method string) *converter.ApiClientMethod {
+func addApiClientMethod(apiClient *converter.ApiClient, regex string, path string, method string) *converter.ApiClientMethod {
 	requestContentType := ""
 	if method != "GET" {
 		requestContentType = applicationJsonContentType

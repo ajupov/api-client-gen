@@ -1,13 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 
 	converter "github.com/ajupov/api-client-gen/converter"
 	parser "github.com/ajupov/api-client-gen/parser"
-	utils "github.com/ajupov/api-client-gen/utils"
+	reader "github.com/ajupov/api-client-gen/reader"
+	templater "github.com/ajupov/api-client-gen/templater"
+	writer "github.com/ajupov/api-client-gen/writer"
 )
 
 func main() {
@@ -25,21 +26,9 @@ func main() {
 	fmt.Println("Regex: " + *regex)
 	fmt.Println("Language: " + *language)
 
-	utils.CreateDirectory(*outputDirectory)
-	content := utils.ReadFromFile(*inputFile)
-	swagger := parser.Parse(content)
-
-	api := converter.Convert(swagger, regex)
-
-	apiClientsSerialized, error := json.MarshalIndent(api.ApiClients, "", "  ")
-	if error != nil {
-		fmt.Println(error.Error())
-	}
-
-	apiClientsSerializedOutputPath := *outputDirectory + "/" + "apiClientsSerialized.json"
-	utils.WriteToFile(apiClientsSerializedOutputPath, &apiClientsSerialized)
-
-	// serialized := parser.Serialize(swagger)
-	// outputPath := *outputDirectory + "/" + "swagger.json"
-	// filesystem.WriteToFile(outputPath, serialized)
+	readed := reader.Read(*inputFile)
+	parsed := parser.Parse(readed)
+	converted := converter.Convert(parsed, *regex)
+	temlated := templater.Template(*language, converted)
+	writer.Write(*outputDirectory, temlated)
 }

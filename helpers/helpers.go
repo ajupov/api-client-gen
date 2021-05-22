@@ -5,8 +5,8 @@ import (
 	"strings"
 )
 
-func GetActionName(regex *string, path string, method string) string {
-	passedActonRegex := strings.Replace(*regex, "{action}", "\\w+", 1)
+func GetActionName(regex string, path string, method string) string {
+	passedActonRegex := strings.Replace(regex, "{action}", "\\w+", 1)
 	compiledRegex := regexp.MustCompile(passedActonRegex)
 
 	matched := compiledRegex.FindStringSubmatch(path)

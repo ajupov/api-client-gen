@@ -8,10 +8,10 @@ import (
 	parser "github.com/ajupov/api-client-gen/parser/types"
 )
 
-func Parse(content *[]byte) *parser.Swagger {
+func Parse(bytes *[]byte) *parser.Swagger {
 	var swagger parser.Swagger
 
-	error := json.Unmarshal(*content, &swagger)
+	error := json.Unmarshal(*bytes, &swagger)
 	if error != nil {
 		fmt.Println("Cannot parse content: " + error.Error())
 		os.Exit(1)
