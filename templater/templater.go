@@ -1,0 +1,4 @@
+package generator
+
+func Template() {
+}
