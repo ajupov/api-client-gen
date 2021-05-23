@@ -1,0 +1,9 @@
+{
+    "ApiClientTemplate": "ApiClient.go.text",
+    "ApiModelTemplate": "ApiModel.go.text",
+    "ApiClientDirectory": "clients",
+    "ApiModelDirectory": "models",
+    "CopyWithoutTemplating": [
+        "IHttpClientFactory.ts"
+    ]
+}
