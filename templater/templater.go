@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"text/template"
 
 	converter "github.com/ajupov/api-client-gen/converter/types"
@@ -27,7 +28,7 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 	return &[]templater.Directory{
 		{
 			Name:  config.ApiClientDirectory,
-			Files: *templateApiClients(languageDirectoryPath+"/"+config.ApiClientTemplate, &api.ApiClients),
+			Files: *templateApiClients(languageDirectoryPath+"/"+config.ApiClientTemplate, config.ApiClientFileExtension, &api.ApiClients),
 		},
 		// {
 		// 	Name:  config.ApiModelDirectory,
@@ -36,10 +37,16 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 	}
 }
 
-func templateApiClients(templatePath string, clients *[]converter.ApiClient) *[]templater.File {
-	apiClientTemplater, error := template.New("ApiClientTemlater").ParseFiles(templatePath)
+func templateApiClients(templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {
+	funcMap := template.FuncMap{
+		"ToLower": strings.ToLower,
+	}
+
+	templateFile := utils.ReadFromFile(templatePath)
+
+	apiClientTemplater, error := template.New("ApiClientTemplater").Funcs(funcMap).Parse(string(*templateFile))
 	if error != nil {
-		fmt.Println("Cannot parse content: " + error.Error())
+		fmt.Println(error.Error())
 		os.Exit(1)
 	}
 
@@ -49,11 +56,10 @@ func templateApiClients(templatePath string, clients *[]converter.ApiClient) *[]
 		var buffer bytes.Buffer
 
 		apiClientTemplater.Execute(&buffer, apiClient)
-
 		bytes := buffer.Bytes()
 
 		files[i] = templater.File{
-			Name:    apiClient.Name + ".json",
+			Name:    apiClient.Name + "Client." + extension,
 			Content: &bytes,
 		}
 	}

@@ -1,19 +1,15 @@
 import IHttpClientFactory from '../IHttpClientFactory'
-{{range $import := .Imports}}
-import {{$import}} from '../models/{{$import}}'
+{{range $import := .Imports}}import {{$import}} from '../models/{{$import}}'
 {{end}}
-
 export default class {{.Name}}Client {
     private readonly httpClientFactory: IHttpClientFactory
 
     constructor(httpClientFactory: IHttpClientFactory) {
         this.httpClientFactory = httpClientFactory
     }
-
     {{range $method := .Methods}}
     public {{$method.Name}}Async = (id: string): Promise<void> =>
         this.httpClientFactory
             .createClient(this.httpClientFactory.host)
-            .{$method.Method}<void>('{{$method.Url}}')
-    {{end}}
-}
+            .{{$method.Method | ToLower}}<void>('{{$method.Url}}')
+{{end}}}

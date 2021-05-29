@@ -3,6 +3,8 @@
     "ApiModelTemplate": "ApiModel.go.text",
     "ApiClientDirectory": "clients",
     "ApiModelDirectory": "models",
+    "ApiClientFileExtension": "ts",
+    "ApiModelFileExtension": "ts",
     "CopyWithoutTemplating": [
         "IHttpClientFactory.ts"
     ]
