@@ -27,6 +27,10 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 
 	return &[]templater.Directory{
 		{
+			Name:  "",
+			Files: *copyWithoutTemplating(languageDirectoryPath, config.CopyWithoutTemplating),
+		},
+		{
 			Name:  config.ApiClientDirectory,
 			Files: *templateApiClients(languageDirectoryPath+"/"+config.ApiClientTemplate, config.ApiClientFileExtension, &api.ApiClients),
 		},
@@ -35,6 +39,19 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 		// 	Files: *templateApiModels(languageDirectoryPath+"/"+config.ApiModelTemplate, &api.ApiModels),
 		// },
 	}
+}
+
+func copyWithoutTemplating(rootPath string, paths *[]string) *[]templater.File {
+	files := make([]templater.File, len(*paths))
+
+	for index, path := range *paths {
+		files[index] = templater.File{
+			Name:    path,
+			Content: utils.ReadFromFile(rootPath + "/" + path),
+		}
+	}
+
+	return &files
 }
 
 func templateApiClients(templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {

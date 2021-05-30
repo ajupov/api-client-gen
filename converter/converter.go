@@ -135,7 +135,7 @@ func convertResponse(apiClientMethod *converter.ApiClientMethod, apiClientImport
 		return
 	}
 
-	apiClientMethod.Response = &converter.ApiClientMethodResponse{
+	apiClientMethod.Response = converter.ApiClientMethodResponse{
 		IsArrayOfType:      false,
 		IsDictionaryOfType: false,
 	}

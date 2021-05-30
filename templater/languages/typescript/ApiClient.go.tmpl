@@ -1,0 +1,24 @@
+{{define "import"}}import {{.}} from '../models/{{.}}'{{end -}}
+{{define "arraytype"}}{{.Type}}[]{{end -}}
+{{define "dictionarytype"}}{[key in string]: {{.Type}}}{{end -}}
+{{define "type"}}{{if .IsArrayOfType}}{{template "arraytype" .}}{{else}}{{if .IsDictionaryOfType}}{{template "dictionarytype" .}}{{else}}{{.Type}}{{end}}{{end}}{{end -}}
+{{define "nullable"}}{{if .Nullable}}?{{else}}{{end}}{{end -}}
+{{define "parameter"}}{{.Name}}{{template "nullable" .}}: {{template "type" .}}{{end -}}
+{{define "responsetype"}}{{if and . .Type }}<{{template "type" .}}{{template "nullable" .}}>{{end}}{{end -}}
+{{define "promiseresponsetype"}}{{if and . .Type }}<{{template "type" .}}{{template "nullable" .}}>{{else}}<void>{{end}}{{end -}}
+
+import IHttpClientFactory from '../IHttpClientFactory'
+{{range $import := .Imports}}{{template "import" $import}}
+{{end}}
+export default class {{.Name}}Client {
+    private readonly httpClientFactory: IHttpClientFactory
+
+    constructor(httpClientFactory: IHttpClientFactory) {
+        this.httpClientFactory = httpClientFactory
+    }
+    {{range $method := .Methods}}
+    public {{$method.Name}}Async = ({{range $parameter := .Parameters}}{{template "parameter" $parameter}}{{end}}): Promise{{template "promiseresponsetype" .Response}} =>
+        this.httpClientFactory
+            .createClient(this.httpClientFactory.host)
+            .{{$method.Method | ToLower}}{{template "responsetype" .Response}}('{{$method.Url}}')
+{{end}}}

@@ -7,5 +7,5 @@ type ApiClientMethod struct {
 	RequestContentType  string
 	ResponseContentType string
 	Parameters          []ApiClientMethodParameter
-	Response            *ApiClientMethodResponse
+	Response            ApiClientMethodResponse
 }

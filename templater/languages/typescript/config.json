@@ -1,6 +1,6 @@
 {
-    "ApiClientTemplate": "ApiClient.go.text",
-    "ApiModelTemplate": "ApiModel.go.text",
+    "ApiClientTemplate": "ApiClient.go.tmpl",
+    "ApiModelTemplate": "ApiModel.go.tmpl",
     "ApiClientDirectory": "clients",
     "ApiModelDirectory": "models",
     "ApiClientFileExtension": "ts",
