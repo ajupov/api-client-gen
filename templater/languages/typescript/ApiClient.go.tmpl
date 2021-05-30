@@ -17,7 +17,7 @@ export default class {{.Name}}Client {
         this.httpClientFactory = httpClientFactory
     }
     {{range $method := .Methods}}
-    public {{$method.Name}}Async = ({{range $parameter := .Parameters}}{{template "parameter" $parameter}}{{end}}): Promise{{template "promiseresponsetype" .Response}} =>
+    public {{$method.Name}}Async = ({{range $index, $parameter := .Parameters}}{{if $index}}, {{end}}{{template "parameter" $parameter}}{{end}}): Promise{{template "promiseresponsetype" .Response}} =>
         this.httpClientFactory
             .createClient(this.httpClientFactory.host)
             .{{$method.Method | ToLower}}{{template "responsetype" .Response}}('{{$method.Url}}')
