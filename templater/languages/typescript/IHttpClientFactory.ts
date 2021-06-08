@@ -1,9 +1,10 @@
 export interface IHttpClient {
-    get: <Result>(url: string, data?: any, headers?: HeadersInit) => Promise<Result>
-    post: <Result>(url: string, data?: any, headers?: HeadersInit) => Promise<Result>
-    put: <Result>(url: string, data?: any, headers?: HeadersInit) => Promise<Result>
-    patch: <Result>(url: string, data?: any, headers?: HeadersInit) => Promise<Result>
-    delete: <Result>(url: string, data?: any, headers?: HeadersInit) => Promise<Result>
+    addHeaders: (headers?: HeadersInit) => void
+    get: <Result>(url: string, parameters?: any) => Promise<Result>
+    post: <Result>(url: string, parameters?: any, body?: any) => Promise<Result>
+    put: <Result>(url: string, parameters?: any, body?: any) => Promise<Result>
+    patch: <Result>(url: string, parameters?: any, body?: any) => Promise<Result>
+    delete: <Result>(url: string, parameters?: any, body?: any) => Promise<Result>
 }
 
 export default interface IHttpClientFactory {

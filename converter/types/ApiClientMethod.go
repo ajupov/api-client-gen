@@ -6,6 +6,8 @@ type ApiClientMethod struct {
 	Method              string
 	RequestContentType  string
 	ResponseContentType string
-	Parameters          []ApiClientMethodParameter
+	PathParameters      []ApiClientMethodParameter
+	QueryParameters     []ApiClientMethodParameter
+	RequestBody         *ApiClientMethodRequestBody
 	Response            ApiClientMethodResponse
 }

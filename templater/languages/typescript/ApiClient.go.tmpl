@@ -4,8 +4,13 @@
 {{define "type"}}{{if .IsArrayOfType}}{{template "arraytype" .}}{{else}}{{if .IsDictionaryOfType}}{{template "dictionarytype" .}}{{else}}{{.Type}}{{end}}{{end}}{{end -}}
 {{define "nullable"}}{{if .Nullable}}?{{else}}{{end}}{{end -}}
 {{define "parameter"}}{{.Name}}{{template "nullable" .}}: {{template "type" .}}{{end -}}
+{{define "parameters"}}{{range $index, $parameter := .}}{{if $index}}, {{end}}{{template "parameter" $parameter}}{{end}}{{end -}}
 {{define "responsetype"}}{{if and . .Type }}<{{template "type" .}}{{template "nullable" .}}>{{end}}{{end -}}
 {{define "promiseresponsetype"}}{{if and . .Type }}<{{template "type" .}}{{template "nullable" .}}>{{else}}<void>{{end}}{{end -}}
+
+{{define "queryparameters"}}{{. | FilterInPathParameters}}{{end -}}
+{{define "pathparameters"}}{{. | FilterInQueryParameters}}{{end -}}
+{{define "bodyparameters"}}{{. | FilterInBodyParameters}}{{range $index, $parameter := .}}{{if $index}}, {{end}}{{template "parameter" $parameter}}{{end}}{{end -}}
 
 import IHttpClientFactory from '../IHttpClientFactory'
 {{range $import := .Imports}}{{template "import" $import}}
@@ -17,7 +22,7 @@ export default class {{.Name}}Client {
         this.httpClientFactory = httpClientFactory
     }
     {{range $method := .Methods}}
-    public {{$method.Name}}Async = ({{range $index, $parameter := .Parameters}}{{if $index}}, {{end}}{{template "parameter" $parameter}}{{end}}): Promise{{template "promiseresponsetype" .Response}} =>
+    public {{$method.Name}}Async = ({{template "parameters" .Parameters}}): Promise{{template "promiseresponsetype" .Response}} =>
         this.httpClientFactory
             .createClient(this.httpClientFactory.host)
             .{{$method.Method | ToLower}}{{template "responsetype" .Response}}('{{$method.Url}}')

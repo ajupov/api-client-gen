@@ -116,7 +116,11 @@ func convertParameters(apiClientMethod *converter.ApiClientMethod, apiClientImpo
 			Nullable: parameter.Schema.Required != nil && !*parameter.Schema.Required,
 		}
 
-		apiClientMethod.Parameters = append(apiClientMethod.Parameters, apiClientParameter)
+		if *parameter.In == "path" {
+			apiClientMethod.PathParameters = append(apiClientMethod.PathParameters, apiClientParameter)
+		} else if *parameter.In == "query" {
+			apiClientMethod.QueryParameters = append(apiClientMethod.QueryParameters, apiClientParameter)
+		}
 	}
 }
 
@@ -184,8 +188,7 @@ func convertRequestBody(apiClientMethod *converter.ApiClientMethod, apiClientImp
 		return
 	}
 
-	apiClientParameter := converter.ApiClientMethodParameter{
-		Name:     "request",
+	apiClientRequestBody := converter.ApiClientMethodRequestBody{
 		Nullable: applicationJson.Schema.Required != nil && !*applicationJson.Schema.Required,
 	}
 
@@ -195,34 +198,34 @@ func convertRequestBody(apiClientMethod *converter.ApiClientMethod, apiClientImp
 			*apiClientImports = append(*apiClientImports, _type)
 		}
 
-		apiClientParameter.Type = _type
-		apiClientParameter.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
+		apiClientRequestBody.Type = _type
+		apiClientRequestBody.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	} else if *applicationJson.Schema.Type == "object" && applicationJson.Schema.AdditionalProperties != nil {
-		apiClientParameter.IsDictionaryOfType = true
+		apiClientRequestBody.IsDictionaryOfType = true
 
 		_type, _isImportType := getTypeWithImport(*applicationJson.Schema.AdditionalProperties)
 		if _isImportType && !helpers.StringArrayContains(apiClientImports, _type) {
 			*apiClientImports = append(*apiClientImports, _type)
 		}
 
-		apiClientParameter.Type = _type
-		apiClientParameter.Nullable = applicationJson.Schema.AdditionalProperties.Nullable != nil && *applicationJson.Schema.AdditionalProperties.Nullable
+		apiClientRequestBody.Type = _type
+		apiClientRequestBody.Nullable = applicationJson.Schema.AdditionalProperties.Nullable != nil && *applicationJson.Schema.AdditionalProperties.Nullable
 	} else if *applicationJson.Schema.Type == "array" && applicationJson.Schema.Items != nil {
-		apiClientParameter.IsArrayOfType = true
+		apiClientRequestBody.IsArrayOfType = true
 
 		_type, _isImportType := getTypeWithImport(*applicationJson.Schema.Items)
 		if _isImportType && !helpers.StringArrayContains(apiClientImports, _type) {
 			*apiClientImports = append(*apiClientImports, _type)
 		}
 
-		apiClientParameter.Type = _type
-		apiClientParameter.Nullable = applicationJson.Schema.Items.Nullable != nil && *applicationJson.Schema.Items.Nullable
+		apiClientRequestBody.Type = _type
+		apiClientRequestBody.Nullable = applicationJson.Schema.Items.Nullable != nil && *applicationJson.Schema.Items.Nullable
 	} else if applicationJson.Schema.Type != nil {
-		apiClientParameter.Type = *applicationJson.Schema.Type
-		apiClientParameter.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
+		apiClientRequestBody.Type = *applicationJson.Schema.Type
+		apiClientRequestBody.Nullable = applicationJson.Schema.Nullable != nil && *applicationJson.Schema.Nullable
 	}
 
-	apiClientMethod.Parameters = append(apiClientMethod.Parameters, apiClientParameter)
+	apiClientMethod.RequestBody = &apiClientRequestBody
 }
 
 func convertSchema(apiModels *[]converter.ApiModel, schemaName string, schema *parser.SwaggerComponentsSchemaOrSwaggerReference) {
