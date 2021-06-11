@@ -1,11 +1,10 @@
 {
-    "ApiClientTemplate": "ApiClient.go.tmpl",
-    "ApiModelTemplate": "ApiModel.go.tmpl",
-    "ApiClientDirectory": "clients",
-    "ApiModelDirectory": "models",
-    "ApiClientFileExtension": "ts",
-    "ApiModelFileExtension": "ts",
-    "CopyWithoutTemplating": [
-        "IHttpClientFactory.ts"
-    ]
+  "ApiClientTemplate": "ApiClient.go.tmpl",
+  "ApiModelTemplate": "ApiModel.go.tmpl",
+  "ApiClientDirectory": "clients",
+  "ApiModelDirectory": "models",
+  "ApiClientFileExtension": "ts",
+  "ApiModelFileExtension": "ts",
+  "TypeMappings": { "integer": "number" },
+  "CopyWithoutTemplating": ["IHttpClientFactory.ts"]
 }

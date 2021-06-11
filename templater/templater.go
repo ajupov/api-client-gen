@@ -32,11 +32,11 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 		},
 		{
 			Name:  config.ApiClientDirectory,
-			Files: *templateApiClients(languageDirectoryPath+"/"+config.ApiClientTemplate, config.ApiClientFileExtension, &api.ApiClients),
+			Files: *templateApiClients(config.TypeMappings, languageDirectoryPath+"/"+config.ApiClientTemplate, config.ApiClientFileExtension, &api.ApiClients),
 		},
 		// {
 		// 	Name:  config.ApiModelDirectory,
-		// 	Files: *templateApiModels(languageDirectoryPath+"/"+config.ApiModelTemplate, &api.ApiModels),
+		// 	Files: *templateApiModels(config.TypeMappings, languageDirectoryPath+"/"+config.ApiModelTemplate, &api.ApiModels),
 		// },
 	}
 }
@@ -54,7 +54,7 @@ func copyWithoutTemplating(rootPath string, paths *[]string) *[]templater.File {
 	return &files
 }
 
-func templateApiClients(templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {
+func templateApiClients(typeMappings *map[string]string, templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {
 	funcMap := template.FuncMap{
 		"ToLower": strings.ToLower,
 		"FilterIsInQueryParameters": func(parameters []converter.ApiClientMethodParameterOrBody) []converter.ApiClientMethodParameterOrBody {
@@ -67,6 +67,9 @@ func templateApiClients(templatePath string, extension string, clients *[]conver
 			}
 
 			return result
+		},
+		"GetMappedType": func(oldType string) string {
+			return getMappedType(typeMappings, oldType)
 		},
 	}
 
@@ -111,4 +114,17 @@ func templateApiModels(templatePath string, models *[]converter.ApiModel) *[]tem
 	}
 
 	return &files
+}
+
+func getMappedType(typeMappings *map[string]string, oldType string) string {
+	if typeMappings == nil || len(*typeMappings) == 0 {
+		return oldType
+	}
+
+	newType, isExists := (*typeMappings)[oldType]
+	if !isExists || newType == "" {
+		return oldType
+	}
+
+	return newType
 }

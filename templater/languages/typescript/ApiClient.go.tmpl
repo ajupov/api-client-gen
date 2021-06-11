@@ -1,7 +1,7 @@
 {{define "import"}}import {{.}} from '../models/{{.}}'{{end -}}
-{{define "arraytype"}}{{.Type}}[]{{end -}}
-{{define "dictionarytype"}}{[key in string]: {{.Type}}}{{end -}}
-{{define "type"}}{{if .IsArrayOfType}}{{template "arraytype" .}}{{else}}{{if .IsDictionaryOfType}}{{template "dictionarytype" .}}{{else}}{{.Type}}{{end}}{{end}}{{end -}}
+{{define "arraytype"}}{{.Type | GetMappedType}}[]{{end -}}
+{{define "dictionarytype"}}{[key in string]: {{.Type | GetMappedType}}}{{end -}}
+{{define "type"}}{{if .IsArrayOfType}}{{template "arraytype" .}}{{else}}{{if .IsDictionaryOfType}}{{template "dictionarytype" .}}{{else}}{{.Type | GetMappedType}}{{end}}{{end}}{{end -}}
 {{define "nullable"}}{{if .Nullable}}?{{end}}{{end -}}
 {{define "parameter"}}{{.Name}}{{template "nullable" .}}{{end -}}
 {{define "parameterwithtype"}}{{template "parameter" .}}: {{template "type" .}}{{end -}}
