@@ -57,6 +57,17 @@ func copyWithoutTemplating(rootPath string, paths *[]string) *[]templater.File {
 func templateApiClients(templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {
 	funcMap := template.FuncMap{
 		"ToLower": strings.ToLower,
+		"FilterIsInQueryParameters": func(parameters []converter.ApiClientMethodParameterOrBody) []converter.ApiClientMethodParameterOrBody {
+			result := make([]converter.ApiClientMethodParameterOrBody, 0)
+
+			for _, parameter := range parameters {
+				if parameter.IsInQuery {
+					result = append(result, parameter)
+				}
+			}
+
+			return result
+		},
 	}
 
 	templateFile := utils.ReadFromFile(templatePath)
