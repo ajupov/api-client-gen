@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -32,7 +33,7 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 		},
 		{
 			Name:  config.ApiClientDirectory,
-			Files: *templateApiClients(config.TypeMappings, languageDirectoryPath+"/"+config.ApiClientTemplate, config.ApiClientFileExtension, &api.ApiClients),
+			Files: *templateApiClients(config, languageDirectoryPath+"/"+config.ApiClientTemplate, &api.ApiClients),
 		},
 		// {
 		// 	Name:  config.ApiModelDirectory,
@@ -54,7 +55,9 @@ func copyWithoutTemplating(rootPath string, paths *[]string) *[]templater.File {
 	return &files
 }
 
-func templateApiClients(typeMappings *map[string]string, templatePath string, extension string, clients *[]converter.ApiClient) *[]templater.File {
+func templateApiClients(config templater.Config, templatePath string, clients *[]converter.ApiClient) *[]templater.File {
+	compiledRegex := regexp.MustCompile(`\{(\w+)\}`)
+
 	funcMap := template.FuncMap{
 		"ToLower": strings.ToLower,
 		"FilterIsInQueryParameters": func(parameters []converter.ApiClientMethodParameterOrBody) []converter.ApiClientMethodParameterOrBody {
@@ -69,7 +72,16 @@ func templateApiClients(typeMappings *map[string]string, templatePath string, ex
 			return result
 		},
 		"GetMappedType": func(oldType string) string {
-			return getMappedType(typeMappings, oldType)
+			return getMappedType(config.TypeMappings, oldType)
+		},
+		"PathParameterReplace": func(value string) string {
+			if config.PathParameterReplacePattern == nil || len(*config.PathParameterReplacePattern) == 0 {
+				return value
+			}
+
+			replaceValue := strings.Replace(*config.PathParameterReplacePattern, "{parameter}", "{$1}", 1)
+
+			return compiledRegex.ReplaceAllString(value, replaceValue)
 		},
 	}
 
@@ -90,7 +102,7 @@ func templateApiClients(typeMappings *map[string]string, templatePath string, ex
 		bytes := buffer.Bytes()
 
 		files[i] = templater.File{
-			Name:    apiClient.Name + "Client." + extension,
+			Name:    apiClient.Name + "Client." + config.ApiClientFileExtension,
 			Content: &bytes,
 		}
 	}

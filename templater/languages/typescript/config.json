@@ -6,5 +6,6 @@
   "ApiClientFileExtension": "ts",
   "ApiModelFileExtension": "ts",
   "TypeMappings": { "integer": "number" },
-  "CopyWithoutTemplating": ["IHttpClientFactory.ts"]
+  "CopyWithoutTemplating": ["IHttpClientFactory.ts"],
+  "PathParameterReplacePattern": "${parameter}"
 }

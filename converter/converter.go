@@ -14,7 +14,7 @@ import (
 const applicationJsonContentType = "application/json"
 
 func Convert(swagger *parser.Swagger, regex string) *converter.Api {
-	matched, error := regexp.MatchString("3(.\\d+)*", *swagger.Openapi)
+	matched, error := regexp.MatchString(`3(.\d+)*`, *swagger.Openapi)
 	if error != nil {
 		fmt.Println("Cannot match OpenAPI version: " + error.Error())
 		os.Exit(1)

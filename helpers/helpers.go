@@ -6,7 +6,7 @@ import (
 )
 
 func GetActionName(regex string, path string, method string) (string, bool) {
-	passedActonRegex := strings.Replace(regex, "{action}", "\\w+", 1)
+	passedActonRegex := strings.Replace(regex, "{action}", `\w+`, 1)
 	compiledRegex := regexp.MustCompile(passedActonRegex)
 
 	matched := compiledRegex.FindStringSubmatch(path)

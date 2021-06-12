@@ -23,7 +23,7 @@ export default class {{.Name}}Client {
     public {{$method.Name}}Async = ({{template "parameterswithtype" .AllParameters}}): Promise{{template "responsetypewithpromise" .Response}} =>
         this.httpClientFactory
             .createClient(this.httpClientFactory.host)
-            .{{$method.Method | ToLower}}{{template "responsetype" .Response}}(`{{$method.Url}}`
+            .{{$method.Method | ToLower}}{{template "responsetype" .Response}}(`{{$method.Url | PathParameterReplace}}`
             {{- if .QueryParameters | len}}, {{template "parameters" .QueryParameters}}{{else}}
             {{- if or (eq $method.Method "GET") (not .RequestBody)}}{{else}}, null{{end}}{{end}}
             {{- if .RequestBody}}, {{template "parameter" .RequestBody}}{{end}})
