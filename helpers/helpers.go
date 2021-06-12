@@ -5,20 +5,17 @@ import (
 	"strings"
 )
 
-func GetActionName(regex string, path string, method string) string {
+func GetActionName(regex string, path string, method string) (string, bool) {
 	passedActonRegex := strings.Replace(regex, "{action}", "\\w+", 1)
 	compiledRegex := regexp.MustCompile(passedActonRegex)
 
 	matched := compiledRegex.FindStringSubmatch(path)
 
-	apiClientMethodName := ""
 	if len(matched) == 2 {
-		apiClientMethodName = matched[1]
+		return matched[1], true
 	} else {
-		apiClientMethodName = strings.Title(strings.ToLower(method))
+		return CapitalizeString(method), false
 	}
-
-	return apiClientMethodName
 }
 
 func StringArrayContains(array *[]string, element string) bool {
@@ -35,4 +32,8 @@ func GetPathLastPart(value string) string {
 	parts := strings.Split(value, "/")
 
 	return parts[len(parts)-1]
+}
+
+func CapitalizeString(value string) string {
+	return strings.Title(strings.ToLower(value))
 }

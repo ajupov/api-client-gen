@@ -90,7 +90,7 @@ func convertHttpMethod(apiClients *[]converter.ApiClient, regex string, path str
 
 	apiClientName := (*operation.Tags)[0]
 	apiClient := getOrAddApiClient(apiClients, apiClientName)
-	apiClientMethod := addApiClientMethod(apiClient, regex, path, method)
+	apiClientMethod := addApiClientMethod(regex, path, method)
 
 	convertParameters(apiClientMethod, &apiClient.Imports, operation.Parameters)
 	convertResponse(apiClientMethod, &apiClient.Imports, operation.Responses)
@@ -122,6 +122,10 @@ func convertParameters(apiClientMethod *converter.ApiClientMethod, apiClientImpo
 
 		if *parameter.In == "query" {
 			apiClientMethod.QueryParameters = append(apiClientMethod.QueryParameters, apiClientParameter)
+		}
+
+		if !apiClientMethod.IsNameMatchedFromRegex {
+			apiClientMethod.Name = apiClientMethod.Name + helpers.CapitalizeString(apiClientParameter.Name)
 		}
 	}
 }
@@ -230,6 +234,10 @@ func convertRequestBody(apiClientMethod *converter.ApiClientMethod, apiClientImp
 
 	apiClientMethod.RequestBody = &apiClientMethodParameterOrBody
 	apiClientMethod.AllParameters = append(apiClientMethod.AllParameters, apiClientMethodParameterOrBody)
+
+	if !apiClientMethod.IsNameMatchedFromRegex {
+		apiClientMethod.Name = apiClientMethod.Name + helpers.CapitalizeString(apiClientMethodParameterOrBody.Name)
+	}
 }
 
 func convertSchema(apiModels *[]converter.ApiModel, schemaName string, schema *parser.SwaggerComponentsSchemaOrSwaggerReference) {
@@ -320,18 +328,20 @@ func getOrAddApiClient(apiClients *[]converter.ApiClient, apiClientName string) 
 	return nil
 }
 
-func addApiClientMethod(apiClient *converter.ApiClient, regex string, path string, method string) *converter.ApiClientMethod {
+func addApiClientMethod(regex string, path string, method string) *converter.ApiClientMethod {
 	requestContentType := ""
 	if method != "GET" {
 		requestContentType = applicationJsonContentType
 	}
 
+	name, isMatched := helpers.GetActionName(regex, path, method)
 	apiClientMethod := &converter.ApiClientMethod{
-		Name:                helpers.GetActionName(regex, path, method),
-		Url:                 path,
-		Method:              method,
-		RequestContentType:  requestContentType,
-		ResponseContentType: applicationJsonContentType,
+		Name:                   name,
+		IsNameMatchedFromRegex: isMatched,
+		Url:                    path,
+		Method:                 method,
+		RequestContentType:     requestContentType,
+		ResponseContentType:    applicationJsonContentType,
 	}
 
 	return apiClientMethod
