@@ -35,10 +35,10 @@ func Template(language string, api *converter.Api) *[]templater.Directory {
 			Name:  config.ApiClientDirectory,
 			Files: *templateApiClients(config, languageDirectoryPath+"/"+config.ApiClientTemplate, &api.ApiClients),
 		},
-		// {
-		// 	Name:  config.ApiModelDirectory,
-		// 	Files: *templateApiModels(config.TypeMappings, languageDirectoryPath+"/"+config.ApiModelTemplate, &api.ApiModels),
-		// },
+		{
+			Name:  config.ApiModelDirectory,
+			Files: *templateApiModels(config, languageDirectoryPath+"/"+config.ApiModelTemplate, &api.ApiModels),
+		},
 	}
 }
 
@@ -110,18 +110,32 @@ func templateApiClients(config templater.Config, templatePath string, clients *[
 	return &files
 }
 
-func templateApiModels(templatePath string, models *[]converter.ApiModel) *[]templater.File {
+func templateApiModels(config templater.Config, templatePath string, models *[]converter.ApiModel) *[]templater.File {
+	templateFile := utils.ReadFromFile(templatePath)
+
+	funcMap := template.FuncMap{
+		"GetMappedType": func(oldType string) string {
+			return getMappedType(config.TypeMappings, oldType)
+		},
+	}
+
+	apiModelTemplater, error := template.New("ApiModelTemplater").Funcs(funcMap).Parse(string(*templateFile))
+	if error != nil {
+		fmt.Println(error.Error())
+		os.Exit(1)
+	}
+
 	files := make([]templater.File, len(*models))
 
 	for i, apiModel := range *models {
-		content, error := json.MarshalIndent(apiModel, "", "  ")
-		if error != nil {
-			fmt.Print(error.Error())
-		}
+		var buffer bytes.Buffer
+
+		apiModelTemplater.Execute(&buffer, apiModel)
+		bytes := buffer.Bytes()
 
 		files[i] = templater.File{
-			Name:    apiModel.Name + ".json",
-			Content: &content,
+			Name:    apiModel.Name + "." + config.ApiModelFileExtension,
+			Content: &bytes,
 		}
 	}
 
