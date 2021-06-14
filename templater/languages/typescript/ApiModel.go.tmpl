@@ -8,7 +8,7 @@
 {{define "enumitem"}}{{.Name}} = {{.Value}}{{end -}}
 
 {{range $import := .Imports}}{{template "import" $import}}
-{{end -}}
+{{end}}
 {{if .IsEnum -}}
 enum {{.Name}} {
     {{- range $index, $item := .EnumItems}}{{if $index }},{{end}}
