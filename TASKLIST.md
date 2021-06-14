@@ -1,6 +1,7 @@
 ### Task list
-- [ ] Write generator for typescript language
+- [+] Write generator for typescript language
 - [ ] Write generator for csharp language
+- [ ] Fix sortings
 - [ ] Make two repositories (Docker image (api-client-gen) and Github Action (api-client-gen-action))
 - [ ] Add versioning for api-client-gen
 - [ ] Add versioning for api-client-gen-action
